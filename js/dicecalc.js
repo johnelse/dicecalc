@@ -36,6 +36,7 @@ function doCalc() {
     var frequencies = {};
     var output = "";
     var factor = 1;
+    var totals = 0;
 
     calcFrequencies(dice, 0, 0, frequencies);
     if ($("input:checkbox#normalise").is(":checked")) {
@@ -44,8 +45,10 @@ function doCalc() {
         factor = 1 / permutations;
     }
     for (var total in frequencies) {
+        totals += 1;
         output += (total + "," + (frequencies[total] * factor) + "\n");
     }
+    $("textarea#results").attr("rows", Math.max(5, totals));
     $("textarea#results").val(output);
 }
 
