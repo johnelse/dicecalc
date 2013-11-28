@@ -35,10 +35,16 @@ function doCalc() {
         .map(parseDie);
     var frequencies = {};
     var output = "";
+    var factor = 1;
 
     calcFrequencies(dice, 0, 0, frequencies);
+    if ($("input:checkbox#normalise").is(":checked")) {
+        var permutations =
+            dice.reduce(function(acc, die) {return acc * die.length}, 1);
+        factor = 1 / permutations;
+    }
     for (var total in frequencies) {
-        output += (total + "," + frequencies[total] + "\n");
+        output += (total + "," + (frequencies[total] * factor) + "\n");
     }
     $("textarea#results").val(output);
 }
