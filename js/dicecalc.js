@@ -1,10 +1,17 @@
 function parseDie(str) {
     var i;
     var result = [];
+    var num = 0;
     var strs = str.split(",");
 
     for (i = 0; i < strs.length; i++) {
-        result.push(parseInt(strs[i]));
+        var num = parseInt(strs[i]);
+        if (isNaN(num)) {
+            throw ("Parse error: \"" + strs[i] + "\"");
+        }
+        else {
+            result.push(num);
+        }
     }
     return result;
 }
@@ -32,26 +39,31 @@ function calcFrequencies(dice, dieIndex, subtotal, table) {
 }
 
 function doCalc() {
-    var dice = $("textarea#dice").val()
-        .split("\n")
-        .map(parseDie);
-    var frequencies = {};
-    var output = "";
-    var factor = 1;
-    var totals = 0;
+    try {
+        var dice = $("textarea#dice").val()
+            .split("\n")
+            .map(parseDie);
+        var frequencies = {};
+        var output = "";
+        var factor = 1;
+        var totals = 0;
 
-    calcFrequencies(dice, 0, 0, frequencies);
-    if ($("input:checkbox#normalise").is(":checked")) {
-        var permutations =
-            dice.reduce(function(acc, die) {return acc * die.length}, 1);
-        factor = 1 / permutations;
+        calcFrequencies(dice, 0, 0, frequencies);
+        if ($("input:checkbox#normalise").is(":checked")) {
+            var permutations =
+                dice.reduce(function(acc, die) {return acc * die.length}, 1);
+            factor = 1 / permutations;
+        }
+        for (var total in frequencies) {
+            totals += 1;
+            output += (total + "," + (frequencies[total] * factor) + "\n");
+        }
+        $("textarea#results").attr("rows", Math.max(5, totals));
+        $("textarea#results").val(output);
     }
-    for (var total in frequencies) {
-        totals += 1;
-        output += (total + "," + (frequencies[total] * factor) + "\n");
+    catch (err) {
+        $("textarea#results").val(err);
     }
-    $("textarea#results").attr("rows", Math.max(5, totals));
-    $("textarea#results").val(output);
 }
 
 $(document).ready(function() {
