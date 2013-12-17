@@ -1,8 +1,10 @@
 function parseDie(str) {
     var i;
     var result = [];
-    for (i = 0; i < str.length; i++) {
-        result.push(parseInt(str[i]));
+    var strs = str.split(",");
+
+    for (i = 0; i < strs.length; i++) {
+        result.push(parseInt(strs[i]));
     }
     return result;
 }
